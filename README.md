@@ -28,35 +28,64 @@ In this project:
 ├── load-balancer/
 │   ├── Dockerfile
 │   └── nginx.conf
-⚙️ Node.js Application
+
+```
+
+---
+
+## ⚙️ Node.js Application
+
 This is a simple HTTP server that returns a message using an environment variable.
 
-📄 index.js
-JavaScript
+### 📄 `index.js`
+
+```javascript
 var http = require('http');
 
 http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/html'});
   res.end(`<h1>${process.env.MESSAGE}</h1>`);
 }).listen(8080);
-🐳 Dockerizing Node.js App
-📄 Dockerfile
-Dockerfile
+
+```
+
+---
+
+## 🐳 Dockerizing Node.js App
+
+### 📄 `Dockerfile`
+
+```dockerfile
 FROM node
 RUN mkdir -p /usr/src/app
 COPY index.js /usr/src/app
 EXPOSE 8080
 CMD ["node", "/usr/src/app/index"]
-🔨 Build Image
-Bash
+
+```
+
+### 🔨 Build Image
+
+```bash
 docker build -t load-balanced-app .
-▶️ Run Two Containers
-Bash
+
+```
+
+### ▶️ Run Two Containers
+
+```bash
 docker run -e "MESSAGE=First instance" -p 8081:8080 -d load-balanced-app
 docker run -e "MESSAGE=Second instance" -p 8082:8080 -d load-balanced-app
-🌐 NGINX Load Balancer
-📄 nginx.conf
-Nginx
+
+```
+
+---
+
+## 🌐 NGINX Load Balancer
+
+### 📄 `nginx.conf`
+
+```nginx
 upstream my-app {
     server 172.17.0.1:8081;
     server 172.17.0.1:8082;
@@ -67,59 +96,85 @@ server {
         proxy_pass http://my-app;
     }
 }
-👉 Uses Round Robin (default algorithm)
 
-🐳 Dockerizing NGINX
-📄 Dockerfile
-Dockerfile
+```
+
+*👉 Uses Round Robin (default algorithm)*
+
+---
+
+## 🐳 Dockerizing NGINX
+
+### 📄 `Dockerfile`
+
+```dockerfile
 FROM nginx
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-🔨 Build Image
-Bash
+
+```
+
+### 🔨 Build Image
+
+```bash
 docker build -t load-balance-nginx .
-▶️ Run Container
-Bash
+
+```
+
+### ▶️ Run Container
+
+```bash
 docker run -p 8080:80 -d load-balance-nginx
-🌍 Access the Application
+
+```
+
+---
+
+## 🌍 Access the Application
+
 Open in your browser:
 
-Plaintext
+```text
 http://localhost:8080
-🔄 Refresh multiple times → you’ll see:
 
-"First instance"
+```
 
-"Second instance"
+**🔄 Refresh multiple times → you’ll see:**
 
-👉 This shows NGINX load balancing working.
+* `"First instance"`
+* `"Second instance"`
 
-🧠 Key Concepts Learned
-Docker containerization
+*👉 This shows NGINX load balancing working.*
 
-Writing Dockerfiles
+---
 
-Running multiple containers
+## 🧠 Key Concepts Learned
 
-Environment variables in containers
+* Docker containerization
+* Writing Dockerfiles
+* Running multiple containers
+* Environment variables in containers
+* NGINX configuration
+* Load balancing (Round Robin)
 
-NGINX configuration
+---
 
-Load balancing (Round Robin)
+## ⚠️ Notes
 
-⚠️ Notes
-172.17.0.1 is Docker's default gateway (may vary)
+* `172.17.0.1` is Docker's default gateway (may vary)
+* Ensure Docker is installed before running commands
 
-Ensure Docker is installed before running commands
+---
 
-🚀 Future Improvements
-Use Docker Compose
+## 🚀 Future Improvements
 
-Deploy on AWS EC2
+* Use Docker Compose
+* Deploy on AWS EC2
+* Add CI/CD using GitHub Actions
+* Use a custom domain with the load balancer
 
-Add CI/CD using GitHub Actions
+---
 
-Use a custom domain with the load balancer
+## 👨‍💻 Author
 
-👨‍💻 Author
-Prince Singh Chauhan DevOps & Cloud Enthusiast 🚀
+**Prince Singh Chauhan** *DevOps & Cloud Enthusiast* 🚀
