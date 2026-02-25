@@ -16,20 +16,6 @@ In this project:
 
 ---
 
-## 🏗️ Project Structure
-
-
-.
-├── app/
-│ ├── Dockerfile
-│ └── index.js
-├── load-balancer/
-│ ├── Dockerfile
-│ └── nginx.conf
-
-
----
-
 ## ⚙️ Node.js Application
 
 This is a simple HTTP server that returns a message using an environment variable.
